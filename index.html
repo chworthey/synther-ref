@@ -1,0 +1,471 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Synther Reference &#8212; synther 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">synther 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="synther-reference">
+<h1>Synther Reference<a class="headerlink" href="#synther-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">synther</span> <span class="kn">as</span> <span class="nn">s</span>
+
+<span class="c1"># Construct a project</span>
+<span class="n">proj</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">gen_project</span><span class="p">()</span>
+
+<span class="c1"># Queue some commands</span>
+<span class="n">virtual_buffer</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">queue_gen_buffer</span><span class="p">()</span>
+<span class="n">proj</span><span class="o">.</span><span class="n">queue_produce_wave</span><span class="p">(</span><span class="n">virtual_buffer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">440</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">WaveType</span><span class="o">.</span><span class="n">SINE</span><span class="p">)</span>
+<span class="n">proj</span><span class="o">.</span><span class="n">queue_produce_wave</span><span class="p">(</span><span class="n">virtual_buffer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">440</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">WaveType</span><span class="o">.</span><span class="n">SINE</span><span class="p">)</span>
+<span class="n">proj</span><span class="o">.</span><span class="n">queue_produce_wave</span><span class="p">(</span><span class="n">virtual_buffer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">440</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">WaveType</span><span class="o">.</span><span class="n">SINE</span><span class="p">)</span>
+
+<span class="c1"># IMPORTANT: This next step must be done. It is used to determine when commands should</span>
+<span class="c1"># or should not be executed.</span>
+<span class="n">proj</span><span class="o">.</span><span class="n">queue_dump_buffer</span><span class="p">(</span><span class="n">virtual_buffer</span><span class="p">,</span> <span class="s1">&#39;output.wav&#39;</span><span class="p">)</span>  <span class="c1"># render wave to file</span>
+
+<span class="c1"># Build. This is the step that will execute the commands if and only if the build system deems it should.</span>
+<span class="n">proj</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
+<span class="c1"># Do you need to execute the command queue anyway? Then do this instead:</span>
+<span class="c1"># proj.clean() &lt;-- uncomment</span>
+<span class="c1"># proj.build() &lt;-- uncomment</span>
+
+<span class="c1"># Or, a more concise way to do the same as the 2 lines above:</span>
+<span class="c1"># proj.rebuild() &lt;-- uncomment</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="module-configuration">
+<h2>Module Configuration<a class="headerlink" href="#module-configuration" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="synther.set_log_level">
+<code class="sig-prename descclassname">synther.</code><code class="sig-name descname">set_log_level</code><span class="sig-paren">(</span><em class="sig-param">log_level: synther.LogLvl</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#synther.set_log_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifies the global log level to set the verbosity of the console output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>log_level</strong> (<a class="reference internal" href="#synther.LogLvl" title="synther.LogLvl"><em>LogLvl</em></a>) – The verbosity level.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="synther.LogLvl">
+<em class="property">class </em><code class="sig-prename descclassname">synther.</code><code class="sig-name descname">LogLvl</code><a class="headerlink" href="#synther.LogLvl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enum class that specifies the verbosity of the console output.</p>
+<dl class="attribute">
+<dt id="synther.LogLvl.ERROR">
+<code class="sig-name descname">ERROR</code><em class="property"> = 0</em><a class="headerlink" href="#synther.LogLvl.ERROR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only the highest priority messages will be logged.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="synther.LogLvl.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = 2</em><a class="headerlink" href="#synther.LogLvl.INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Important information, errors, and warnings will be logged.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="synther.LogLvl.VERBOSE">
+<code class="sig-name descname">VERBOSE</code><em class="property"> = 3</em><a class="headerlink" href="#synther.LogLvl.VERBOSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Everything including the smallest details will be logged.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="synther.LogLvl.WARNING">
+<code class="sig-name descname">WARNING</code><em class="property"> = 1</em><a class="headerlink" href="#synther.LogLvl.WARNING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only high priority errors and warnings will be logged.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="common-types">
+<h2>Common Types<a class="headerlink" href="#common-types" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="synther.WaveType">
+<em class="property">class </em><code class="sig-prename descclassname">synther.</code><code class="sig-name descname">WaveType</code><a class="headerlink" href="#synther.WaveType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enum class that corresponds to common types of wave patterns.</p>
+<dl class="attribute">
+<dt id="synther.WaveType.NOISE">
+<code class="sig-name descname">NOISE</code><em class="property"> = 4</em><a class="headerlink" href="#synther.WaveType.NOISE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces random white noise. Great for sweeps and general atomosphere.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="synther.WaveType.SAW">
+<code class="sig-name descname">SAW</code><em class="property"> = 1</em><a class="headerlink" href="#synther.WaveType.SAW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a saw wave. Harsh characteristics, and great for lead synths.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="synther.WaveType.SINE">
+<code class="sig-name descname">SINE</code><em class="property"> = 0</em><a class="headerlink" href="#synther.WaveType.SINE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a sine wave. Soft characteristics, and great for bass sounds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="synther.WaveType.SQUARE">
+<code class="sig-name descname">SQUARE</code><em class="property"> = 2</em><a class="headerlink" href="#synther.WaveType.SQUARE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a square wave. Hollow characteristics.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="synther.WaveType.TRIANGLE">
+<code class="sig-name descname">TRIANGLE</code><em class="property"> = 3</em><a class="headerlink" href="#synther.WaveType.TRIANGLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a triangle wave. Sounds similar to a saw wave, but softer.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="build-system">
+<h2>Build System<a class="headerlink" href="#build-system" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="synther.gen_project">
+<code class="sig-prename descclassname">synther.</code><code class="sig-name descname">gen_project</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; synther.SyntherProject<a class="headerlink" href="#synther.gen_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a build project.</p>
+<p>This is the recommended way to start interacting with Synther.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A blank project.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#synther.SyntherProject" title="synther.SyntherProject">SyntherProject</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="synther.SyntherProject">
+<em class="property">class </em><code class="sig-prename descclassname">synther.</code><code class="sig-name descname">SyntherProject</code><a class="headerlink" href="#synther.SyntherProject" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class provides utilities for creating command queues (rather than maniuplating low-level buffers in realtime).</p>
+<p>The main purpose of this class is to reduce the amount of compute time in a music production pipeline by:</p>
+<ul class="simple">
+<li><p>Storing command queue thumbprints in a file: ‘.synther-cache’</p></li>
+<li><p>Assessing whether changes have been made to the command queue since the last run</p></li>
+<li><p>Only executing a command queue if changes have been made to the pipeline concerning that render.</p></li>
+</ul>
+<p>The build process will take care of many things such as watching for file changes that the pipeline is dependent on.
+It will also free any memory buffers as soon as they are no longer in use.</p>
+<dl class="method">
+<dt id="synther.SyntherProject.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#synther.SyntherProject.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders all of the dumped memory buffers, but only if there have been changes to the pipeline since the last session.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="synther.SyntherProject.clean">
+<code class="sig-name descname">clean</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#synther.SyntherProject.clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the build cache and all .wav files that would be rendered in a subsequent build.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Any file names passed into queue_dump_buffer() will be deleted.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="synther.SyntherProject.queue_dump_buffer">
+<code class="sig-name descname">queue_dump_buffer</code><span class="sig-paren">(</span><em class="sig-param">buffer: int</em>, <em class="sig-param">filename: str</em><span class="sig-paren">)</span><a class="headerlink" href="#synther.SyntherProject.queue_dump_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queues the writing of a memory buffer to a .wav file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> – A virtual handle to a buffer-to-be.</p></li>
+<li><p><strong>filename</strong> – The file name (preferably with extension ‘.wav’) to output to.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="synther.SyntherProject.queue_gen_buffer">
+<code class="sig-name descname">queue_gen_buffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#synther.SyntherProject.queue_gen_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queues the creation of a memory buffer, and returns a virtual handle to that buffer-to-be.</p>
+<p>You can use the virtual buffer handle on subsequent queue_* commands that require it.
+Upon build, the virtual buffer handle will be mapped to a runtime memory buffer handle
+if the render(s) concerning this buffer takes place.</p>
+<p>Buffers can be manipulated by other functions in order to produce sound waves.
+This buffer will be freed automatically by the build system when no longer in use.
+The free will take place <em>immediately</em> after last use (not garbage collected).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A virtual handle to a buffer-to-be.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="synther.SyntherProject.queue_produce_wave">
+<code class="sig-name descname">queue_produce_wave</code><span class="sig-paren">(</span><em class="sig-param">buffer: int</em>, <em class="sig-param">attack_start_ms: int</em>, <em class="sig-param">attack_ms: int</em>, <em class="sig-param">sustain_ms: int</em>, <em class="sig-param">decay_ms: int</em>, <em class="sig-param">freq_hz: float</em>, <em class="sig-param">amp: float</em>, <em class="sig-param">wave_type: synther.WaveType</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#synther.SyntherProject.queue_produce_wave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queues the insertion of a generated wave into a memory buffer with additive synthesis.</p>
+<p>To reduce popping, a wave is split into 3 phases:</p>
+<ul class="simple">
+<li><p>Attack Phase: The period of time in which the amplitude [linearly] increases from 0 to the target amplitude</p></li>
+<li><p>Sustain Phase: The period of time in which the amplitude is loudest, and the note is held</p></li>
+<li><p>Decay Phase: The period of time in which the amplitude [linearly] decreses from the target amplitude to 0</p></li>
+</ul>
+<p>The total wave duration is equal to: attack_ms + sustain_ms + decay_ms.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Amplitude is currently a linear range in file format terms (not in decibals). The range is 0-32767. This is expected to change in future versions.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> – A virtual handle to a buffer-to-be.</p></li>
+<li><p><strong>attack_start_ms</strong> – The time (in milliseconds) where the wave starts.</p></li>
+<li><p><strong>attack_ms</strong> – The duration (in milliseconds) of the attack phase.</p></li>
+<li><p><strong>sustain_ms</strong> – The duration (in milliseconds) of the sustain phase.</p></li>
+<li><p><strong>decay_ms</strong> – The duration (in milliseconds) of the decay phase.</p></li>
+<li><p><strong>freq_hz</strong> – The frequency (which defines a base pitch for most wave types) of the wave oscillation in hz. 440 hz is A4 standard pitch in musical terms.</p></li>
+<li><p><strong>amp</strong> – A value in range 0-32767 which defines the amplitude (volume) of the oscillator during the sustain phase.</p></li>
+<li><p><strong>wave_type</strong> (<a class="reference internal" href="#synther.WaveType" title="synther.WaveType"><em>WaveType</em></a>) – The type of wave to create the oscillation. Examples: WaveType.SINE, WaveType.SQUARE, etc.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="synther.SyntherProject.queue_sample_file">
+<code class="sig-name descname">queue_sample_file</code><span class="sig-paren">(</span><em class="sig-param">buffer: int</em>, <em class="sig-param">filename: str</em>, <em class="sig-param">buffer_start_ms: int</em>, <em class="sig-param">sample_start_ms: int</em>, <em class="sig-param">duration_ms: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#synther.SyntherProject.queue_sample_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queues the sampling of a .wav file which will be copied into a memory buffer.</p>
+<p>File types other than .wav are not supported, currently.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>44100 hz sample rate and 16 bit stereo is the ideal format.
+A better sampling approach is in development for other formats.
+Only PCM type 1 or 2 channel .wav files are supported currently.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> – A virtual handle to a buffer-to-be.</p></li>
+<li><p><strong>filename</strong> – The file name to read from.</p></li>
+<li><p><strong>buffer_start_ms</strong> – The time (in milliseconds) to insert the clip.</p></li>
+<li><p><strong>sample_start_ms</strong> – The time (in milliseconds) to start reading from the file.</p></li>
+<li><p><strong>duration_ms</strong> – The time (in milliseconds) to copy from the file to the buffer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="synther.SyntherProject.rebuild">
+<code class="sig-name descname">rebuild</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#synther.SyntherProject.rebuild" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans and builds the project.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>any file names passed into queue_dump_buffer() will be deleted.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="direct-buffer-manipulation">
+<h2>Direct Buffer Manipulation<a class="headerlink" href="#direct-buffer-manipulation" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is highly recommended you use the build system instead.</p>
+</div>
+<dl class="function">
+<dt id="synther.gen_buffer">
+<code class="sig-prename descclassname">synther.</code><code class="sig-name descname">gen_buffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#synther.gen_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a low-level memory buffer.</p>
+<p>Buffers can be manipulated by other functions in order to produce sound waves.
+Buffers should be freed with free_buffer() when no longer in use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A direct handle to the low-level buffer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="synther.get_buffer_bytes">
+<code class="sig-prename descclassname">synther.</code><code class="sig-name descname">get_buffer_bytes</code><span class="sig-paren">(</span><em class="sig-param">buffer: int</em><span class="sig-paren">)</span> &#x2192; bytes<a class="headerlink" href="#synther.get_buffer_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a raw byte array from a memory buffer.</p>
+<p>The raw byte array is 1:1 with the memory buffers that can be
+dumped to an uncompressed 16-bit stereo (2 channel) .wav file at a
+sample rate of 44100 hz. What this means is: bytes 1 and 2 become an
+unsigned 16 bit integer for the left channel. Bytes 3 and 4 become an
+unsigned 16 bit integer for the right channel. That is one sample. The
+byte configuration is repeated to make the samples that define the entire
+wave form. Use 44100 hz (samples per second) to convert any sample position
+to a timestamp as needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>buffer</strong> – A direct handle to the low-level buffer.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A raw byte list-like object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="synther.dump_buffer">
+<code class="sig-prename descclassname">synther.</code><code class="sig-name descname">dump_buffer</code><span class="sig-paren">(</span><em class="sig-param">buffer: int</em>, <em class="sig-param">filename: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#synther.dump_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the buffer to a .wav formatted file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> – A direct handle to the low-level buffer.</p></li>
+<li><p><strong>filename</strong> – The file name (preferably with extension ‘.wav’) to output to.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="synther.sample_file">
+<code class="sig-prename descclassname">synther.</code><code class="sig-name descname">sample_file</code><span class="sig-paren">(</span><em class="sig-param">buffer: int</em>, <em class="sig-param">filename: str</em>, <em class="sig-param">buffer_start_ms: int</em>, <em class="sig-param">sample_start_ms: int</em>, <em class="sig-param">duration_ms: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#synther.sample_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read from a .wav file (other types not supported, currently).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, 44100 hz sample rate and 16 bit stereo is the ideal format.
+A better sampling approach is in development for other formats.
+Only PCM type 1 or 2 channel .wav files are supported.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> – A direct handle to the low-level buffer.</p></li>
+<li><p><strong>filename</strong> – The file name to read from.</p></li>
+<li><p><strong>buffer_start_ms</strong> – The time (in milliseconds) to insert the clip.</p></li>
+<li><p><strong>sample_start_ms</strong> – The time (in milliseconds) to start reading from the file.</p></li>
+<li><p><strong>duration_ms</strong> – The time (in milliseconds) to copy from the file to the buffer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="synther.produce_wave">
+<code class="sig-prename descclassname">synther.</code><code class="sig-name descname">produce_wave</code><span class="sig-paren">(</span><em class="sig-param">buffer: int</em>, <em class="sig-param">attack_start_ms: int</em>, <em class="sig-param">attack_ms: int</em>, <em class="sig-param">sustain_ms: int</em>, <em class="sig-param">decay_ms: int</em>, <em class="sig-param">freq_hz: float</em>, <em class="sig-param">amp: float</em>, <em class="sig-param">wave_type: synther.WaveType</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#synther.produce_wave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts a generated wave into a memory buffer with additive synthesis.</p>
+<p>To prevent popping, a wave is split into 3 phases:</p>
+<ul class="simple">
+<li><p>Attack Phase: The period of time in which the amplitude [linearly] increases from 0 to the target amplitude</p></li>
+<li><p>Sustain Phase: The period of time in which the amplitude is loudest, and the note is held</p></li>
+<li><p>Decay Phase: The period of time in which the amplitude [linearly] decreses from the target amplitude to 0</p></li>
+</ul>
+<p>The total wave duration is equal to: attack_ms + sustain_ms + decay_ms.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Amplitude is currently a linear range in file format terms (not in decibals). The range is 0-32767. This is expected to change in future versions.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> – A direct handle to the low-level buffer.</p></li>
+<li><p><strong>attack_start_ms</strong> – The time (in milliseconds) where the wave starts.</p></li>
+<li><p><strong>attack_ms</strong> – The duration (in milliseconds) of the attack phase.</p></li>
+<li><p><strong>sustain_ms</strong> – The duration (in milliseconds) of the sustain phase.</p></li>
+<li><p><strong>decay_ms</strong> – The duration (in milliseconds) of the decay phase.</p></li>
+<li><p><strong>freq_hz</strong> – The frequency (which defines a base pitch for most wave types) of the wave oscillation in hz. 440 hz is A4 standard pitch in musical terms.</p></li>
+<li><p><strong>amp</strong> – A value in range 0-32767 which defines the amplitude (volume) of the oscillator during the sustain phase.</p></li>
+<li><p><strong>wave_type</strong> (<a class="reference internal" href="#synther.WaveType" title="synther.WaveType"><em>WaveType</em></a>) – The type of wave to create the oscillation. Examples: WaveType.SINE, WaveType.SQUARE, etc.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="synther.free_buffer">
+<code class="sig-prename descclassname">synther.</code><code class="sig-name descname">free_buffer</code><span class="sig-paren">(</span><em class="sig-param">buffer: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#synther.free_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frees the low-level memory buffer.</p>
+<p>This should always be done for a buffer generated with gen_buffer() as soon as the buffer is not needed anymore due to
+performance reasons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>buffer</strong> – A direct handle to the low-level buffer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Synther Reference</a><ul>
+<li><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li><a class="reference internal" href="#module-configuration">Module Configuration</a></li>
+<li><a class="reference internal" href="#common-types">Common Types</a></li>
+<li><a class="reference internal" href="#build-system">Build System</a></li>
+<li><a class="reference internal" href="#direct-buffer-manipulation">Direct Buffer Manipulation</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">synther 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Patrick Worthey.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
